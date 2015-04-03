@@ -1,5 +1,7 @@
 # Parallaxer
 
+![Alt preview](http://g.recordit.co/ToQhMQT6d9.gif "Preview")
+
 #Setup
 ```
 repositories {
