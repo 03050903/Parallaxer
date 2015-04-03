@@ -18,7 +18,8 @@ package pl.schibsted.parallaxer;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -40,7 +41,7 @@ import pl.schibsted.parallaxer.views.OnScrollChangedCallback;
 public class Parallaxer {
     protected static final String TAG = "Parallaxer";
 
-    private Toolbar toolbar;
+    private ActionBar actionBar;
 
     private Drawable actionBarBackgroundDrawable;
     private FrameLayout headerContainer;
@@ -172,11 +173,13 @@ public class Parallaxer {
         return root;
     }
 
-    public void init(Toolbar toolbar) {
+    public void init(ActionBarActivity activity) {
+        actionBar = activity.getSupportActionBar();
+
         if (actionBarBackgroundDrawable == null) {
-            actionBarBackgroundDrawable = toolbar.getResources().getDrawable(actionBarBackgroundResId);
+            actionBarBackgroundDrawable = activity.getResources().getDrawable(actionBarBackgroundResId);
         }
-        toolbar.setBackground(actionBarBackgroundDrawable);
+        actionBar.setBackgroundDrawable(actionBarBackgroundDrawable);
         actionBarBackgroundDrawable.setAlpha(0);
     }
 
@@ -281,14 +284,14 @@ public class Parallaxer {
     private int mLastScrollPosition;
 
     private void onNewScroll(int scrollPosition) {
-        if (toolbar == null) return;
+        if (actionBar == null) return;
 
         int currentHeaderHeight = headerContainer.getHeight();
         if (currentHeaderHeight != lastHeaderHeight) {
             updateHeaderHeight(currentHeaderHeight);
         }
 
-        int headerHeight = currentHeaderHeight - toolbar.getHeight();
+        int headerHeight = currentHeaderHeight - actionBar.getHeight();
         float ratio = (float) Math.min(Math.max(scrollPosition, 0), headerHeight) / headerHeight;
         int newAlpha = (int) (ratio * 255);
         actionBarBackgroundDrawable.setAlpha(newAlpha);
