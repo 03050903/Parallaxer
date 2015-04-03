@@ -1,6 +1,6 @@
 # Parallaxer
 
-![Alt preview](http://g.recordit.co/ToQhMQT6d9.gif "Preview")
+<img src="http://g.recordit.co/ToQhMQT6d9.gif" height="340" />
 
 #Setup
 ```
