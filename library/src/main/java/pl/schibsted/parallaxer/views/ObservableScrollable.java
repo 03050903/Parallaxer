@@ -1,4 +1,4 @@
-package pl.schibsted.fadingactionbarcompat.views;
+package pl.schibsted.parallaxer.views;
 
 
 public interface ObservableScrollable {

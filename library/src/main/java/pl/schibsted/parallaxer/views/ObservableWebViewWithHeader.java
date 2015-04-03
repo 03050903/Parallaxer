@@ -1,4 +1,4 @@
-package pl.schibsted.fadingactionbarcompat.views;
+package pl.schibsted.parallaxer.views;
 
 
 import android.content.Context;

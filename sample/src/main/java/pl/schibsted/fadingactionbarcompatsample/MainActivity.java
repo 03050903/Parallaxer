@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import pl.schibsted.fadingactionbarcompat.R;
+import pl.schibsted.parallaxer.R;
 
 
 public class MainActivity extends ActionBarActivity {

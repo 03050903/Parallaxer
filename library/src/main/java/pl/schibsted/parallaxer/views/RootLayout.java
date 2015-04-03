@@ -1,18 +1,18 @@
-package pl.schibsted.fadingactionbarcompat.views;
+package pl.schibsted.parallaxer.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import pl.schibsted.fadingactionbarcompat.R;
+import pl.schibsted.parallaxer.R;
 
 
 public class RootLayout extends FrameLayout {
 
-    private View mHeaderContainer;
-    private View mListViewBackground;
-    private boolean mInitialized = false;
+    private View headerContainer;
+    private View listViewBackground;
+    private boolean initialized = false;
 
     public RootLayout(Context context) {
         super(context);
@@ -28,42 +28,42 @@ public class RootLayout extends FrameLayout {
 
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         //at first find headerViewContainer and listViewBackground
-        if (mHeaderContainer == null)
-            mHeaderContainer = findViewById(R.id.fab__header_container);
-        if (mListViewBackground == null)
-            mListViewBackground = findViewById(R.id.fab__listview_background);
+        if (headerContainer == null)
+            headerContainer = findViewById(R.id.fab__header_container);
+        if (listViewBackground == null)
+            listViewBackground = findViewById(R.id.fab__listview_background);
 
         //if there's no headerViewContainer then fallback to standard FrameLayout
-        if (mHeaderContainer == null) {
+        if (headerContainer == null) {
             super.onLayout(changed, left, top, right, bottom);
             return;
         }
 
-        if (!mInitialized) {
+        if (!initialized) {
             super.onLayout(changed, left, top, right, bottom);
-            //if mListViewBackground not exists or mListViewBackground exists
+            //if listViewBackground not exists or listViewBackground exists
             //and its top is at headercontainer height then view is initialized
-            if (mListViewBackground == null || mListViewBackground.getTop() == mHeaderContainer.getHeight())
-                mInitialized = true;
+            if (listViewBackground == null || listViewBackground.getTop() == headerContainer.getHeight())
+                initialized = true;
             return;
         }
 
         //get last header and listViewBackground position
-        int headerTopPrevious = mHeaderContainer.getTop();
-        int listViewBackgroundTopPrevious = mListViewBackground != null ? mListViewBackground.getTop() : 0;
+        int headerTopPrevious = headerContainer.getTop();
+        int listViewBackgroundTopPrevious = listViewBackground != null ? listViewBackground.getTop() : 0;
 
         //relayout
         super.onLayout(changed, left, top, right, bottom);
 
         //revert header top position
-        int headerTopCurrent = mHeaderContainer.getTop();
+        int headerTopCurrent = headerContainer.getTop();
         if (headerTopCurrent != headerTopPrevious) {
-            mHeaderContainer.offsetTopAndBottom(headerTopPrevious - headerTopCurrent);
+            headerContainer.offsetTopAndBottom(headerTopPrevious - headerTopCurrent);
         }
         //revert listViewBackground top position
-        int listViewBackgroundTopCurrent = mListViewBackground != null ? mListViewBackground.getTop() : 0;
+        int listViewBackgroundTopCurrent = listViewBackground != null ? listViewBackground.getTop() : 0;
         if (listViewBackgroundTopCurrent != listViewBackgroundTopPrevious) {
-            mListViewBackground.offsetTopAndBottom(listViewBackgroundTopPrevious - listViewBackgroundTopCurrent);
+            listViewBackground.offsetTopAndBottom(listViewBackgroundTopPrevious - listViewBackgroundTopCurrent);
         }
     }
 

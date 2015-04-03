@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.manuelpeinado.fadingactionbar.view.RootLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<pl.schibsted.parallaxer.views.RootLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
-    <include layout="@layout/fab__header_container" />
+    <include layout="@layout/parallaxer__header_container" />
 
-    <com.manuelpeinado.fadingactionbar.view.ObservableScrollView
+    <pl.schibsted.parallaxer.views.ObservableScrollView
         android:id="@+id/fab__scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true" >
+        android:fillViewport="true">
 
         <LinearLayout
             android:id="@+id/fab__container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <FrameLayout
                 android:id="@+id/fab__content_top_margin"
@@ -23,6 +23,6 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent" />
         </LinearLayout>
-    </com.manuelpeinado.fadingactionbar.view.ObservableScrollView>
+    </pl.schibsted.parallaxer.views.ObservableScrollView>
 
-</com.manuelpeinado.fadingactionbar.view.RootLayout>
+</pl.schibsted.parallaxer.views.RootLayout>

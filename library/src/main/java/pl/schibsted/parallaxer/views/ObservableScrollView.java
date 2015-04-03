@@ -1,4 +1,4 @@
-package pl.schibsted.fadingactionbarcompat.views;
+package pl.schibsted.parallaxer.views;
 
 
 import android.content.Context;
@@ -11,9 +11,9 @@ import android.widget.ScrollView;
  */
 public class ObservableScrollView extends ScrollView implements ObservableScrollable {
     // Edge-effects don't mix well with the translucent action bar in Android 2.X
-    private boolean mDisableEdgeEffects = true;
+    private boolean disableEdgeEffects = true;
 
-    private OnScrollChangedCallback mOnScrollChangedListener;
+    private OnScrollChangedCallback onScrollChangedListener;
 
     public ObservableScrollView(Context context) {
         super(context);
@@ -30,15 +30,15 @@ public class ObservableScrollView extends ScrollView implements ObservableScroll
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
-        if (mOnScrollChangedListener != null) {
-            mOnScrollChangedListener.onScroll(l, t);
+        if (onScrollChangedListener != null) {
+            onScrollChangedListener.onScroll(l, t);
         }
     }
 
     @Override
     protected float getTopFadingEdgeStrength() {
         // http://stackoverflow.com/a/6894270/244576
-        if (mDisableEdgeEffects && Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+        if (disableEdgeEffects && Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             return 0.0f;
         }
         return super.getTopFadingEdgeStrength();
@@ -47,7 +47,7 @@ public class ObservableScrollView extends ScrollView implements ObservableScroll
     @Override
     protected float getBottomFadingEdgeStrength() {
         // http://stackoverflow.com/a/6894270/244576
-        if (mDisableEdgeEffects && Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+        if (disableEdgeEffects && Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             return 0.0f;
         }
         return super.getBottomFadingEdgeStrength();
@@ -55,6 +55,6 @@ public class ObservableScrollView extends ScrollView implements ObservableScroll
 
     @Override
     public void setOnScrollChangedCallback(OnScrollChangedCallback callback) {
-        mOnScrollChangedListener = callback;
+        onScrollChangedListener = callback;
     }
 }
