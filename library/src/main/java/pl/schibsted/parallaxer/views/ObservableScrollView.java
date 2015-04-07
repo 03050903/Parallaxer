@@ -2,18 +2,17 @@ package pl.schibsted.parallaxer.views;
 
 
 import android.content.Context;
-import android.os.Build;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.widget.ScrollView;
 
 /**
  * @author Cyril Mottier with modifications from Manuel Peinado
  */
 public class ObservableScrollView extends ScrollView implements ObservableScrollable {
-    // Edge-effects don't mix well with the translucent action bar in Android 2.X
-    private boolean disableEdgeEffects = true;
 
     private OnScrollChangedCallback onScrollChangedListener;
+    private OnScrollableMotionEventCallback onScrollableMotionEventListener;
 
     public ObservableScrollView(Context context) {
         super(context);
@@ -36,25 +35,19 @@ public class ObservableScrollView extends ScrollView implements ObservableScroll
     }
 
     @Override
-    protected float getTopFadingEdgeStrength() {
-        // http://stackoverflow.com/a/6894270/244576
-        if (disableEdgeEffects && Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            return 0.0f;
-        }
-        return super.getTopFadingEdgeStrength();
-    }
-
-    @Override
-    protected float getBottomFadingEdgeStrength() {
-        // http://stackoverflow.com/a/6894270/244576
-        if (disableEdgeEffects && Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            return 0.0f;
-        }
-        return super.getBottomFadingEdgeStrength();
-    }
-
-    @Override
     public void setOnScrollChangedCallback(OnScrollChangedCallback callback) {
         onScrollChangedListener = callback;
+    }
+
+    public void setOnScrollableMotionEventListener(OnScrollableMotionEventCallback onScrollableMotionEventListener) {
+        this.onScrollableMotionEventListener = onScrollableMotionEventListener;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (onScrollableMotionEventListener != null) {
+            onScrollableMotionEventListener.onMotionEvent(event);
+        }
+        return super.onTouchEvent(event);
     }
 }

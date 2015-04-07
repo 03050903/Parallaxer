@@ -36,6 +36,7 @@ import android.widget.ListView;
 import pl.schibsted.parallaxer.views.ObservableScrollView;
 import pl.schibsted.parallaxer.views.ObservableWebViewWithHeader;
 import pl.schibsted.parallaxer.views.OnScrollChangedCallback;
+import pl.schibsted.parallaxer.views.OnScrollableMotionEventCallback;
 
 @SuppressWarnings("unchecked")
 public class Parallaxer {
@@ -187,7 +188,11 @@ public class Parallaxer {
         ViewGroup webViewContainer = (ViewGroup) inflater.inflate(R.layout.parallaxer__webview_container, null);
 
         ObservableWebViewWithHeader webView = (ObservableWebViewWithHeader) contentView;
-        webView.setOnScrollChangedCallback(mOnScrollChangedListener);
+        webView.setOnScrollChangedCallback(onScrollChangedListener);
+
+        if (allowHeaderTouchEvents) {
+            webView.setOnScrollableMotionEventListener(onScrollableMotionEventListener);
+        }
 
         webViewContainer.addView(webView);
 
@@ -201,10 +206,6 @@ public class Parallaxer {
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         webView.addView(marginView);
 
-        if (allowHeaderTouchEvents) {
-            setMarginViewTouchListener();
-        }
-
         return webViewContainer;
     }
 
@@ -212,11 +213,14 @@ public class Parallaxer {
         ViewGroup scrollViewContainer = (ViewGroup) inflater.inflate(R.layout.parallaxer__scrollview_container, null);
 
         ObservableScrollView scrollView = (ObservableScrollView) scrollViewContainer.findViewById(R.id.fab__scroll_view);
-        scrollView.setOnScrollChangedCallback(mOnScrollChangedListener);
+        scrollView.setOnScrollChangedCallback(onScrollChangedListener);
+
+        if (allowHeaderTouchEvents) {
+            scrollView.setOnScrollableMotionEventListener(onScrollableMotionEventListener);
+        }
 
         ViewGroup contentContainer = (ViewGroup) scrollViewContainer.findViewById(R.id.fab__container);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         contentView.setLayoutParams(layoutParams);
         contentContainer.addView(contentView);
         headerContainer = (FrameLayout) scrollViewContainer.findViewById(R.id.fab__header_container);
@@ -224,14 +228,17 @@ public class Parallaxer {
         headerContainer.addView(headerView, 0);
         marginView = (FrameLayout) contentContainer.findViewById(R.id.fab__content_top_margin);
 
-        if (allowHeaderTouchEvents) {
-            setMarginViewTouchListener();
-        }
-
         return scrollViewContainer;
     }
 
-    private OnScrollChangedCallback mOnScrollChangedListener = new OnScrollChangedCallback() {
+    private OnScrollableMotionEventCallback onScrollableMotionEventListener = new OnScrollableMotionEventCallback() {
+        @Override
+        public void onMotionEvent(MotionEvent event) {
+            headerView.dispatchTouchEvent(event);
+        }
+    };
+
+    private OnScrollChangedCallback onScrollChangedListener = new OnScrollChangedCallback() {
         public void onScroll(int l, int t) {
             onNewScroll(t);
         }
@@ -256,10 +263,6 @@ public class Parallaxer {
         listViewBackgroundView.setLayoutParams(params);
 
         listView.setOnScrollListener(mOnScrollListener);
-
-        if (allowHeaderTouchEvents) {
-            setMarginViewTouchListener();
-        }
 
         return contentContainer;
     }
@@ -337,12 +340,4 @@ public class Parallaxer {
         gradientView.setBackgroundResource(gradient);
     }
 
-    private void setMarginViewTouchListener() {
-        marginView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return headerView.dispatchTouchEvent(event);
-            }
-        });
-    }
 }

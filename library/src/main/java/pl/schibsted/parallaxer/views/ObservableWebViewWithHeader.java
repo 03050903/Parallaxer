@@ -12,7 +12,8 @@ import android.webkit.WebView;
  * Adapted from: http://stackoverflow.com/a/14753235/244576 and http://stackoverflow.com/a/11442374/244576
  */
 public class ObservableWebViewWithHeader extends WebView implements ObservableScrollable {
-    private OnScrollChangedCallback mOnScrollChangedCallback;
+    private OnScrollChangedCallback onScrollChangedCallback;
+    private OnScrollableMotionEventCallback onScrollableMotionEventListener;
 
     public ObservableWebViewWithHeader(Context context) {
         super(context);
@@ -32,67 +33,67 @@ public class ObservableWebViewWithHeader extends WebView implements ObservableSc
     private int headerHeight;
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
-       super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-       // determine height of title bar
-       View title = getChildAt(0);
-       headerHeight = title==null ? 0 : title.getMeasuredHeight();
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        // determine height of title bar
+        View title = getChildAt(0);
+        headerHeight = title == null ? 0 : title.getMeasuredHeight();
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev){
-       return true;   // don't pass our touch events to children (title bar), we send these in dispatchTouchEvent
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return true;   // don't pass our touch events to children (title bar), we send these in dispatchTouchEvent
     }
 
     private boolean touchInHeader;
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent me){
+    public boolean dispatchTouchEvent(MotionEvent me) {
 
-       boolean wasInTitle = false;
-       switch(me.getActionMasked()){
-       case MotionEvent.ACTION_DOWN:
-          touchInHeader = (me.getY() <= visibleHeaderHeight());
-          break;
+        boolean wasInTitle = false;
+        switch (me.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                touchInHeader = (me.getY() <= visibleHeaderHeight());
+                break;
 
-       case MotionEvent.ACTION_UP:
-       case MotionEvent.ACTION_CANCEL:
-          wasInTitle = touchInHeader;
-          touchInHeader = false;
-          break;
-       }
-       if (touchInHeader || wasInTitle) {
-          View title = getChildAt(0);
-          if(title!=null) {
-             // this touch belongs to title bar, dispatch it here
-             me.offsetLocation(0, getScrollY());
-             return title.dispatchTouchEvent(me);
-          }
-       }
-       // this is our touch, offset and process
-       me.offsetLocation(0, -headerHeight);
-       return super.dispatchTouchEvent(me);
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                wasInTitle = touchInHeader;
+                touchInHeader = false;
+                break;
+        }
+        if (touchInHeader || wasInTitle) {
+            View title = getChildAt(0);
+            if (title != null) {
+                // this touch belongs to title bar, dispatch it here
+                me.offsetLocation(0, getScrollY());
+                return title.dispatchTouchEvent(me);
+            }
+        }
+        // this is our touch, offset and process
+        me.offsetLocation(0, -headerHeight);
+        return super.dispatchTouchEvent(me);
     }
 
     /**
      * @return visible height of title (may return negative values)
      */
-    private int visibleHeaderHeight(){
-       return headerHeight-getScrollY();
-    }       
+    private int visibleHeaderHeight() {
+        return headerHeight - getScrollY();
+    }
 
     @Override
-    protected void onDraw(Canvas c){
-       c.save();
-       int tH = visibleHeaderHeight();
-       if(tH > 0) {
-          // clip so that it doesn't clear background under title bar
-          int sx = getScrollX(), sy = getScrollY();
-          c.clipRect(sx, sy+tH, sx+getWidth(), sy+getHeight());
-       }
-       c.translate(0, headerHeight);
-       super.onDraw(c);
-       c.restore();
+    protected void onDraw(Canvas c) {
+        c.save();
+        int tH = visibleHeaderHeight();
+        if (tH > 0) {
+            // clip so that it doesn't clear background under title bar
+            int sx = getScrollX(), sy = getScrollY();
+            c.clipRect(sx, sy + tH, sx + getWidth(), sy + getHeight());
+        }
+        c.translate(0, headerHeight);
+        super.onDraw(c);
+        c.restore();
     }
 
     /*
@@ -102,21 +103,33 @@ public class ObservableWebViewWithHeader extends WebView implements ObservableSc
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
-        
+
         View title = getChildAt(0);
         if (title != null)   // undo horizontal scroll, so that title scrolls only vertically
-           title.offsetLeftAndRight(l - title.getLeft());
+            title.offsetLeftAndRight(l - title.getLeft());
 
-        if (mOnScrollChangedCallback != null)
-            mOnScrollChangedCallback.onScroll(l, t);
+        if (onScrollChangedCallback != null)
+            onScrollChangedCallback.onScroll(l, t);
     }
 
     public OnScrollChangedCallback getOnScrollChangedCallback() {
-        return mOnScrollChangedCallback;
+        return onScrollChangedCallback;
     }
 
     @Override
     public void setOnScrollChangedCallback(OnScrollChangedCallback callback) {
-        mOnScrollChangedCallback = callback;
+        onScrollChangedCallback = callback;
+    }
+
+    public void setOnScrollableMotionEventListener(OnScrollableMotionEventCallback onScrollableMotionEventListener) {
+        this.onScrollableMotionEventListener = onScrollableMotionEventListener;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (onScrollableMotionEventListener != null) {
+            onScrollableMotionEventListener.onMotionEvent(event);
+        }
+        return super.onTouchEvent(event);
     }
 }
