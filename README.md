@@ -12,6 +12,6 @@ repositories {
 }
     
 dependencies {
-    compile 'com.github.Schibsted-Tech-Polska:Parallaxer:1.0.2'
+    compile 'com.github.Schibsted-Tech-Polska:Parallaxer:1.0.3'
 }
 ```
