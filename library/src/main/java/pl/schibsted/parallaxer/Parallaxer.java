@@ -52,6 +52,7 @@ public class Parallaxer {
     private int headerOverlayLayoutResId;
     private View headerOverlayView;
     private int contentLayoutResId;
+    private Drawable contentTopDrawable;
     private View contentView;
     private LayoutInflater inflater;
     private boolean lightActionBar;
@@ -118,6 +119,11 @@ public class Parallaxer {
         return this;
     }
 
+    public final Parallaxer contentViewTopDrawable(Drawable topDrawable) {
+        contentTopDrawable = topDrawable;
+        return this;
+    }
+
     public final View createView(Context context) {
         return createView(LayoutInflater.from(context));
     }
@@ -152,6 +158,10 @@ public class Parallaxer {
         }
         if (headerOverlayView != null) {
             marginView.addView(headerOverlayView);
+        }
+
+        if (contentTopDrawable != null) {
+            marginView.setBackground(contentTopDrawable);
         }
 
         // Use measured height here as an estimate of the header height, later on after the layout is complete 

@@ -27,7 +27,8 @@ public class MainFragment extends Fragment {
         parallaxer = new Parallaxer()
                 .actionBarBackground(R.drawable.shape_toolbar_bg)
                 .headerLayout(R.layout.view_header)
-                .contentLayout(R.layout.view_content);
+                .contentLayout(R.layout.view_content)
+                .contentViewTopDrawable(getResources().getDrawable(R.drawable.shadow));
 
         View view = parallaxer.createView(getActivity());
         parallaxer.init((ActionBarActivity) getActivity());
